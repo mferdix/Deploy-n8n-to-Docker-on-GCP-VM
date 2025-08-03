@@ -290,3 +290,6 @@ Anda dapat menyesuaikan beberapa parameter langsung di dalam file `server.js`:
 
 ---
 
+## Flow n8n 
+Mouse Click > HTTP Request Puppett > Email
+
