@@ -135,3 +135,143 @@ services:
 
 volumes:
   n8n_data: {}
+
+
+# API Screenshot Halaman Web dengan Puppeteer
+
+Ini adalah sebuah server API sederhana yang dibangun menggunakan Node.js dan Express.js untuk mengambil tangkapan layar (screenshot) dari halaman web mana pun secara dinamis. Proyek ini menggunakan [Puppeteer](https://pptr.dev/) untuk mengontrol browser Chromium dalam mode *headless* dan [Sharp](https://sharp.pixelplumbing.com/) untuk memproses gambar (resize dan kompresi).
+
+API ini sangat cocok untuk kebutuhan automasi, pelaporan, atau pengarsipan visual halaman web.
+
+## Fitur Utama
+
+-   **Pengambilan Screenshot Dinamis**: Cukup sediakan URL melalui query parameter untuk mendapatkan screenshot.
+-   **Pemrosesan Gambar**: Gambar yang dihasilkan secara otomatis diubah ukurannya (resize) dan dikompresi untuk mengoptimalkan ukuran file.
+-   **Penanganan Halaman Kompleks**: Dilengkapi dengan mekanisme waktu tunggu untuk memastikan halaman yang memuat konten secara dinamis (JavaScript-heavy) dapat ditangkap dengan sempurna.
+-   **Output Siap Pakai**: Respons API menyertakan header `Content-Disposition` sehingga browser akan otomatis mengunduh gambar dengan nama file yang sudah ditentukan.
+-   **Manajemen Proses**: Menggunakan [PM2](https://pm2.keymetrics.io/) untuk menjaga agar server API tetap berjalan 24/7.
+
+## Teknologi yang Digunakan
+
+-   **Backend**: Node.js, Express.js
+-   **Web Scraping/Browser Automation**: Puppeteer
+-   **Image Processing**: Sharp
+-   **Process Manager**: PM2
+-   **Server**: Ubuntu (atau distro Linux berbasis Debian lainnya)
+
+## Prasyarat
+
+Sebelum memulai, pastikan server Anda sudah memiliki:
+-   Sistem Operasi Ubuntu 20.04 atau lebih baru.
+-   Node.js (v18.x atau lebih tinggi).
+-   npm (biasanya terinstal bersama Node.js).
+-   Git.
+
+## Instalasi
+
+1.  **Clone Repositori**
+    Masuk ke server Anda melalui SSH dan clone repositori ini.
+    ```bash
+    git clone [https://github.com/NAMA_USER_ANDA/NAMA_REPO_ANDA.git](https://github.com/NAMA_USER_ANDA/NAMA_REPO_ANDA.git)
+    cd NAMA_REPO_ANDA
+    ```
+
+2.  **Instal Dependensi Proyek**
+    Instal semua library Node.js yang dibutuhkan (Express, Puppeteer, Sharp).
+    ```bash
+    npm install
+    ```
+
+3.  **Instal Dependensi Sistem untuk Chromium**
+    Puppeteer memerlukan browser Chromium dan beberapa library sistem agar dapat berjalan.
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y chromium-browser
+    ```
+
+## Menjalankan Server
+
+Disarankan untuk menggunakan PM2 agar server API berjalan secara persisten di latar belakang.
+
+1.  **Instal PM2 secara Global**
+    ```bash
+    sudo npm install -g pm2
+    ```
+
+2.  **Jalankan Server dengan PM2**
+    Dari dalam direktori proyek, jalankan perintah berikut:
+    ```bash
+    pm2 start server.js --name screenshot-api
+    ```
+
+3.  **Verifikasi Status**
+    Pastikan server berjalan dengan status `online`.
+    ```bash
+    pm2 list
+    ```
+
+4.  **Simpan Proses agar Berjalan Otomatis saat Reboot**
+    ```bash
+    pm2 save
+    pm2 startup
+    ```
+    PM2 akan memberikan satu perintah lagi untuk Anda salin dan jalankan.
+
+## Penggunaan API
+
+API ini memiliki satu endpoint untuk digunakan.
+
+### GET /screenshot
+
+Mengambil screenshot dari URL yang diberikan.
+
+-   **URL Endpoint**: `http://<ALAMAT_IP_SERVER>:3000/screenshot`
+-   **Method**: `GET`
+-   **Query Parameters**:
+    -   `url` (wajib): Alamat URL lengkap dari halaman yang ingin di-screenshot.
+
+-   **Contoh Penggunaan**:
+    ```
+    [http://123.45.67.89:3000/screenshot?url=https://www.google.com](http://123.45.67.89:3000/screenshot?url=https://www.google.com)
+    ```
+
+-   **Respons Sukses**:
+    -   **Kode Status**: `200 OK`
+    -   **Headers**:
+        -   `Content-Type: image/jpeg`
+        -   `Content-Disposition: attachment; filename="screenshot-laporan.jpg"`
+    -   **Body**: Data biner dari gambar screenshot.
+
+-   **Respons Gagal**:
+    -   **Kode Status**: `400 Bad Request` jika parameter `url` tidak disertakan.
+    -   **Kode Status**: `500 Internal Server Error` jika terjadi kegagalan saat proses Puppeteer.
+
+## Konfigurasi
+
+Anda dapat menyesuaikan beberapa parameter langsung di dalam file `server.js`:
+
+-   **Port Server**: Ubah nilai variabel `port`.
+    ```javascript
+    const port = 3000;
+    ```
+-   **Dimensi Browser**: Ubah nilai di `page.setViewport`.
+    ```javascript
+    await page.setViewport({ width: 1280, height: 720 });
+    ```
+-   **Batas Waktu Tunggu**: Ubah nilai `timeout` di `page.goto` (dalam milidetik).
+    ```javascript
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
+    ```
+-   **Jeda Tambahan**: Ubah waktu tunggu tambahan setelah halaman dimuat (dalam milidetik).
+    ```javascript
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    ```
+-   **Kualitas dan Ukuran Gambar**: Ubah parameter `width` dan `quality` di dalam fungsi `sharp`.
+    ```javascript
+    const resizedImageBuffer = await sharp(imageBuffer)
+      .resize({ width: 800 })
+      .jpeg({ quality: 70 })
+      .toBuffer();
+    ```
+
+---
