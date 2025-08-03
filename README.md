@@ -1,7 +1,5 @@
 # Deploy n8n di GCP dengan Docker
 
-![n8n Logo](https://raw.githubusercontent.com/n8n-io/n8n-docs/master/.vuepress/public/images/n8n-logo.png)
-
 Repositori ini berisi panduan dan file konfigurasi `docker-compose.yml` untuk melakukan deployment server otomasi **n8n** di **Google Cloud Platform (GCP)** menggunakan Docker.
 
 ## 🚀 Deskripsi Proyek
