@@ -1,3 +1,52 @@
+# Automasi Screenshot ke Email
+
+Repositori ini berisi kode dan dokumentasi untuk salah satu komponen kunci dalam membangun alur kerja automasi penuh menggunakan n8n: sebuah **API kustom untuk pengambilan screenshot halaman web**.
+
+Proyek ini dirancang sebagai solusi andal ketika node bawaan atau komunitas n8n untuk mengambil screenshot mengalami kendala, misalnya karena versi n8n yang lebih lama, dependensi yang tidak kompatibel di dalam Docker, atau lingkungan server yang spesifik. Dengan membuat microservice terpisah ini, kita mendapatkan kendali penuh atas proses pengambilan screenshot.
+
+## Gambaran Umum Alur Kerja Keseluruhan
+
+Automasi penuh dari awal hingga akhir melibatkan tiga tahap utama:
+
+1.  **Instalasi n8n**: Menjalankan n8n sebagai layanan utama menggunakan Docker di sebuah server (misalnya, VM di Google Cloud Platform).
+2.  **Setup Server API Screenshot (Proyek Ini)**: Menginstal dan menjalankan server API dari repositori ini di server yang sama. Server ini akan bertugas mengambil screenshot saat diminta oleh n8n.
+3.  **Pembuatan Flow Automation di n8n**: Merancang alur kerja di antarmuka n8n yang secara berurutan:
+    * Memicu alur kerja (misalnya, setiap hari pada jam tertentu).
+    * Mengirim permintaan ke API screenshot ini untuk mendapatkan gambar.
+    * Mengirim gambar yang diterima ke berbagai tujuan, seperti **Email** dan **Microsoft Teams**.
+
+Dokumentasi di bawah ini akan berfokus pada **Tahap 2**, yaitu cara menginstal, menjalankan, dan menggunakan server API screenshot ini.
+
+---
+
+## Detail Komponen: API Screenshot dengan Puppeteer
+
+Ini adalah sebuah server API sederhana yang dibangun menggunakan Node.js dan Express.js untuk mengambil tangkapan layar (screenshot) dari halaman web mana pun secara dinamis. Proyek ini menggunakan [Puppeteer](https://pptr.dev/) untuk mengontrol browser Chromium dalam mode *headless* dan [Sharp](https://sharp.pixelplumbing.com/) untuk memproses gambar (resize dan kompresi).
+
+### Fitur Utama
+
+-   **Pengambilan Screenshot Dinamis**: Cukup sediakan URL melalui query parameter untuk mendapatkan screenshot.
+-   **Pemrosesan Gambar**: Gambar yang dihasilkan secara otomatis diubah ukurannya (resize) dan dikompresi untuk mengoptimalkan ukuran file.
+-   **Penanganan Halaman Kompleks**: Dilengkapi dengan mekanisme waktu tunggu untuk memastikan halaman yang memuat konten secara dinamis (JavaScript-heavy) dapat ditangkap dengan sempurna.
+-   **Output Siap Pakai**: Respons API menyertakan header `Content-Disposition` sehingga browser akan otomatis mengunduh gambar dengan nama file yang sudah ditentukan.
+-   **Manajemen Proses**: Menggunakan [PM2](https://pm2.keymetrics.io/) untuk menjaga agar server API tetap berjalan 24/7.
+
+### Teknologi yang Digunakan
+
+-   **Backend**: Node.js, Express.js
+-   **Web Scraping/Browser Automation**: Puppeteer
+-   **Image Processing**: Sharp
+-   **Process Manager**: PM2
+-   **Server**: Ubuntu (atau distro Linux berbasis Debian lainnya)
+
+### Prasyarat
+
+Sebelum memulai, pastikan server Anda sudah memiliki:
+-   Sistem Operasi Ubuntu 20.04 atau lebih baru.
+-   Node.js (v18.x atau lebih tinggi).
+-   npm (biasanya terinstal bersama Node.js).
+-   Git.
+
 # Deploy n8n di GCP dengan Docker
 
 Repositori ini berisi panduan dan file konfigurasi `docker-compose.yml` untuk melakukan deployment server otomasi **n8n** di **Google Cloud Platform (GCP)** menggunakan Docker.
