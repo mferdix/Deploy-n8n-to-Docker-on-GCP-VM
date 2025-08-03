@@ -222,7 +222,7 @@ Sebelum memulai, pastikan server Anda sudah memiliki:
 1.  **Clone Repositori**
     Masuk ke server Anda melalui SSH dan clone repositori ini.
     ```bash
-    git clone [https://github.com/NAMA_USER_ANDA/NAMA_REPO_ANDA.git](https://github.com/NAMA_USER_ANDA/NAMA_REPO_ANDA.git)
+    git clone [https://github.com/mferdix/Deploy-n8n-to-Docker-on-GCP-VM.git](https://github.com/mferdix/Deploy-n8n-to-Docker-on-GCP-VM)
     cd NAMA_REPO_ANDA
     ```
 
