@@ -257,3 +257,36 @@ app.get('/screenshot', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server API Screenshot berjalan di http://localhost:${port}`);
 });
+
+```
+
+## Konfigurasi
+
+Anda dapat menyesuaikan beberapa parameter langsung di dalam file `server.js`:
+
+-   **Port Server**: Ubah nilai variabel `port`.
+    ```javascript
+    const port = 3000;
+    ```
+-   **Dimensi Browser**: Ubah nilai di `page.setViewport`.
+    ```javascript
+    await page.setViewport({ width: 1280, height: 720 });
+    ```
+-   **Batas Waktu Tunggu**: Ubah nilai `timeout` di `page.goto` (dalam milidetik).
+    ```javascript
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 120000 });
+    ```
+-   **Jeda Tambahan**: Ubah waktu tunggu tambahan setelah halaman dimuat (dalam milidetik).
+    ```javascript
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    ```
+-   **Kualitas dan Ukuran Gambar**: Ubah parameter `width` dan `quality` di dalam fungsi `sharp`.
+    ```javascript
+    const resizedImageBuffer = await sharp(imageBuffer)
+      .resize({ width: 800 })
+      .jpeg({ quality: 70 })
+      .toBuffer();
+    ```
+
+---
+
