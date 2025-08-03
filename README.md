@@ -132,8 +132,8 @@ Kita perlu membuka port `5678` agar n8n bisa diakses.
 
 1.  Clone repositori ini (atau cukup buat direktori dan file `docker-compose.yml`).
     ```bash
-    git clone [URL_REPOSITORI_ANDA]
-    cd [NAMA_DIREKTORI_REPO]
+    git clone https://github.com/mferdix/Deploy-n8n-to-Docker-on-GCP-VM
+    cd Deploy-n8n-to-Docker-on-GCP-VM
     ```
     Atau jika manual:
     ```bash
