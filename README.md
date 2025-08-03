@@ -136,6 +136,7 @@ services:
 volumes:
   n8n_data: {}
 
+```
 
 # API Screenshot Halaman Web dengan Puppeteer
 
